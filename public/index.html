@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" src="style.css">
+    <title>Kárpitos</title>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white p-4 flex items-center justify-between">
+        <!-- Bal oldali rész: oldal neve -->
+        <div class="text-xl font-bold">
+            <a href="#">Kárpitos</a>
+        </div>
+
+        <!-- Középső rész: navbar elemek -->
+        <div class="flex space-x-6">
+            <a href="#about" class="hover:text-gray-200">Rólunk</a>
+            <a href="#services" class="hover:text-gray-200">Szolgáltatások</a>
+            <a href="#contact" class="hover:text-gray-200">Kapcsolat</a>
+            <a href="#booking" class="hover:text-gray-200">Foglalás</a>
+        </div>
+    </nav>
+
+    <main class="p-6">
+        <!-- Információk -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Rólunk</h2>
+            <p class="text-gray-700">
+                Minőségi kárpitos és szőnyeges szolgáltatásokat nyújtunk több mint 10 éves tapasztalattal. 
+                Akár bútorfelújításról, akár szőnyegtisztításról van szó, számíthatsz ránk!
+            </p>
+        </section>
+
+        <!-- Elérhetőség -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Elérhetőségeink</h2>
+            <p class="text-gray-700">Telefonszám: +36 30 123 4567</p>
+            <p class="text-gray-700">Email: info@karpitos-szonyeges.hu</p>
+            <p class="text-gray-700">Cím: 1234 Budapest, Példa utca 12.</p>
+        </section>
+
+        <!-- Foglalási naptár -->
+        <section>
+            <h2 class="text-xl font-semibold mb-4">Foglalás</h2>
+            <p class="text-gray-700 mb-4">Válassz egy időpontot a foglaláshoz és add meg az email címed:</p>
+            <input id="booking-calendar" class="p-2 border border-gray-300 rounded-lg mb-4" placeholder="Válassz dátumot">
+            <input id="user-email" type="email" class="p-2 border border-gray-300 rounded-lg mb-4" placeholder="Email címed">
+            <button id="submit-booking" class="bg-blue-600 text-white px-4 py-2 rounded-lg mt-4">Foglalás küldése</button>
+            <p id="booking-message" class="text-green-600 mt-4 hidden">Sikeres foglalás!</p>
+        </section>
+        
+        <script>
+            flatpickr("#booking-calendar", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                locale: "hu",
+            });
+        
+            document.getElementById("submit-booking").addEventListener("click", async () => {
+                const date = document.getElementById("booking-calendar").value;
+                const email = document.getElementById("user-email").value;
+        
+                if (!date || !email) {
+                    alert("Kérlek, töltsd ki mindkét mezőt!");
+                    return;
+                }
+        
+                const response = await fetch("http://localhost:3000/book", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ date, email }),
+                });
+        
+                if (response.ok) {
+                    document.getElementById("booking-message").classList.remove("hidden");
+                } else {
+                    alert("Hiba történt a foglalás során. Próbáld újra!");
+                }
+            });
+        </script>
+</body>
+</html>
